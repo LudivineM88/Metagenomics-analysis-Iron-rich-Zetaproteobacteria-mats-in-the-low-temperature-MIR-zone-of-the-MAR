@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#PBS -q omp
+#PBS -l mem=150gb
+#PBS -l ncpus=40
+#PBS -l walltime=3:00:00
+
+. /path/to/gtdbtk/2.7.0/env.sh
+
+cd /path/to/03_MAGs
+
+
+gtdbtk classify_wf --cpus 33 --genome_dir MAGs --skip_ani_screen -x fa --out_dir taxonomy/classify_wf_output_gtdbtk >> ../LOGS/MAGs_gtdbtk.log 2>&1
