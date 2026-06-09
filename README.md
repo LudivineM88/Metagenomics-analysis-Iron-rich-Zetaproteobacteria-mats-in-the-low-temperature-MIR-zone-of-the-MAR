@@ -12,7 +12,8 @@ The MIR mound is a LT zone showing several diffuse fluid emissions, associated w
 
 All data analysis were performed using the DATARMOR cluster (https://pcdm.ifremer.fr/Equipement)
 
-# Quality control of raw metagenomic data
+# 1. MAGs formation
+## 1.1 Quality control of raw metagenomic data
 
 Read quality assessment and adapter trimming were first conducted using FastQC, MultiQC, and BBDuk. These analyses were implemented through a Snakemake workflow developed by J. Aubé, a bioinformatics engineer at the laboratory, ensuring a standardized and reproducible preprocessing pipeline.
 
@@ -31,7 +32,7 @@ snakemake $@ --verbose --cluster-config $SF/S01_cluster.yml --configfile $SF/S01
 
 Rule files for clusters and Snakemake are also available under the names S01_cmuster.yml and S01_rules.smk
 
-# Assembly step
+## 1.2 Assembly step
 
 Assembly was performed using the metagenomics workflow implemented in Anvi’o (Eren et al., 2021), developed by Alon Shaiber and collaborators. The workflow was run with the default parameters.
 
@@ -75,7 +76,7 @@ anvi-run-workflow -w metagenomics \
 
 The required files can be found under the names samples.txt, cluster.yml and metagenomic_config.json
 
-# Binning step 
+## 1.3 Binning step 
 
 We decided to use BASALT, an automated binning tool that integrates multiple binning algorithms to improve genome recovery. To run BASALT, symbolic links were first created in the directory 02_ANVIO/07_BASALT, pointing to the assembly files located in 02_ANVIO/02_FASTA/ and to the quality-filtered short reads stored in 02_ANVIO/01_QC/ (both R1 and R2 files).
 
@@ -95,7 +96,8 @@ BASALT -a MIR-contigs-prefix-formatted-only.fa \
        -t ${NCPUS} -m 300 >> ../00_LOGS/basalt.log 2>&1
 
 ```
-# Quality check
+# 2. Quality check and taxonomic assignation
+## 2.1 Quality check
 
 The step for selecting MAGs based on completeness and redundancy was carried out using the CheckM2 tool.
 
@@ -124,7 +126,7 @@ singularity run -B /appli -B /path/to/checkm2/1.0.1/ -B $DATAWORK ${CHECKM2_SIF}
 
 The quality filter was set to a completion rate of over 70% and a redundancy rate of less than 5% for the retained MAGs.
 
-# Taxonomic assignation
+## 2.2 Taxonomic assignation
 
 Taxonomic affiliation was carried out with the GTDB-Tk tool using the GTDB database (v.2.7.0 (R232))
 
@@ -139,7 +141,7 @@ gtdbtk classify_wf --cpus 33 --genome_dir MAGs --skip_ani_screen -x fa --out_dir
 
 ```
 
-# Reformatted Fasta files
+# 3. Reformatted Fasta files
 
 The Fasta files were reformatted using the command line `anvi-script-reformat-fasta` in Anvio'8.
 
@@ -161,8 +163,40 @@ anvi-script-reformat-fasta $i -o NCBI/MIR_"$prefix".fasta --prefix $prefix --sim
 done >> ../00_LOGS/${PBS_JOBNAME}.log 2>&1
 
 ```
+# 4. Mapping (read recruitment)
 
-# Construction of the HMM profile _grcJ_ 
+This step allows us to assess the relative abundance of the recovered bins across all samples. For this purpose, we use the Anvi'o metagenomics workflow in reference mode, following the pipeline described previously. The analysis generates an anvi'o collection and a comprehensive summary reporting MAG relative abundance, detection, and the presence of single-copy core genes (SCGs) and ribosomal genes. Furthermore, it provides a framework for visualizing the bins produced by Basalt and refining them when required.
+
+```
+#S09_mapping.pbs
+. /appli/bioinfo/anvio/8_dev/env.sh
+
+TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
+LOG="S08_mapping"_"$TIMESTAMP"".log"
+
+cd /path/to/06_MAPPING
+
+anvi-run-workflow -w metagenomics \
+                  -c /path/to/config.json \
+                  --additional-params \
+                      --directory /hpath/to/06_MAPPING \
+                      --jobs 20 \
+                      --latency-wait 420 \
+                      --cluster-config /path/to/cluster.yml \
+		      --rerun-triggers mtime \
+                      --cluster \
+                          "qsub -N {rule} \
+                                -m n \
+                                -q {cluster.queue} \
+                                -l walltime={cluster.walltime} \
+                                -l mem={cluster.memory} \
+                                -l ncpus={threads} \
+                                -V" >> /path/to/00_LOGS/$LOG 2>&1
+
+```
+
+# HMM 
+## 5.1 Construction of the HMM profile _grcJ_ 
 
 HMM profile for the _grcJ_ gene, identified as a potential new marker of iron oxidation (Barco et al., 2025), was created and used with the HMMER tool (v.3.3.2) (Eddy et al., 2023). First, the amino acid sequence from Barco et al. (2024) was retrieved and entered into the NCBI database (WP_051937832.1) in order to obtain other _grcJ_ sequences. Hits with an e-value lower than 1.0×10<sup>-50</sup> were conserved and aligned with multiple alignment program for amino acid or nucleotide sequences (v7) (MAFFT). The HMM profile of _grcJ_ was built with hmmbuild (default parameter) (DOI: 10.5281/zenodo.19659629). 
 
@@ -170,7 +204,7 @@ HMM profile for the _grcJ_ gene, identified as a potential new marker of iron ox
 hmmbuild grcJ.hmm grcJ_alignement.fasta 
 ```
 
-# HMM profile searches
+## 5.2 HMM profile searches
 
 All HMM profile searches for all MAGs were based on Prokka prediction with a threshold value of 1.0×10<sup>-30</sup> using HMMER tool
 
@@ -184,6 +218,12 @@ for ID in prokka/*/*.faa
     hmmsearch ../09_HMM/grcJ.hmm $ID
 done
 ```
+
+# 6. Metabolic overview 
+## 6.1 Fegenie
+
+
+## 6.2 METABOLIC
 
 
 
