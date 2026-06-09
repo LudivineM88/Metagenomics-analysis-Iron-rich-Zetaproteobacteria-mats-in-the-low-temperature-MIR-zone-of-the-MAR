@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#PBS -l mem=4G
+#PBS -q omp
+#PBS -l ncpus=2
+#PBS -l walltime=2:00:00
+#PBS -m n
+
+########################################
+##      Load environment              ##
+########################################
+
+# Load tool : path to the tool
+. /path/to/anvio/8_dev/env.sh
+
+# Path to working directory
+cd /path/to/04_MAGs
+
+# Reformat fasta files : in fasta file, replace bin name by the rename bin name (script S01)
+for i in MAGs_SELECTED/*.fa
+do 
+name=$(basename "$i")
+prefix=$(echo "$name"|cut -f1 -d '_')
+
+anvi-script-reformat-fasta $i -o NCBI/MIR_"$prefix".fasta --prefix $prefix --simplify-names -r NCBI.txt
+done >> ../00_LOGS/${PBS_JOBNAME}.log 2>&1
+
