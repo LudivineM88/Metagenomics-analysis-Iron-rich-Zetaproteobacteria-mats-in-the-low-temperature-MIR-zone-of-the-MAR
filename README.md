@@ -121,3 +121,20 @@ cd $workdir
 singularity run -B /appli -B /path/to/checkm2/1.0.1/ -B $DATAWORK ${CHECKM2_SIF} checkm2 predict --input $input -x fa --threads 6 --output-directory $outdir >& $workdir/checkm2_test.log 2>&1  
   
 ```
+
+The quality filter was set to a completion rate of over 70% and a redundancy rate of less than 5% for the retained MAGs.
+
+# Taxonomic assignation
+
+Taxonomic affiliation was carried out with the GTDB-Tk tool using the GTDB database (v.2.7.0 (R232))
+
+```
+#S05_gtdbtk.pbs
+. /path/to/gtdbtk/2.7.0/env.sh
+
+cd /path/to/03_MAGs
+
+
+gtdbtk classify_wf --cpus 33 --genome_dir MAGs --skip_ani_screen -x fa --out_dir taxonomy/classify_wf_output_gtdbtk >> ../LOGS/MAGs_gtdbtk.log 2>&1
+
+```
