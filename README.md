@@ -46,7 +46,7 @@ The workflow was then launched using the Anvi’o metagenomics pipeline, which p
 ```
 #S02_anvio_workflow.pbs
 
-. /appli/bioinfo/anvio/8_dev/env.sh
+. /path/to/anvio/8_dev/env.sh
 
 
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
@@ -75,6 +75,49 @@ anvi-run-workflow -w metagenomics \
 
 The required files can be found under the names samples.txt, cluster.yml and metagenomic_config.json
 
+# Binning step 
+
+We decided to use BASALT, an automated binning tool that integrates multiple binning algorithms to improve genome recovery. To run BASALT, symbolic links were first created in the directory 02_ANVIO/07_BASALT, pointing to the assembly files located in 02_ANVIO/02_FASTA/ and to the quality-filtered short reads stored in 02_ANVIO/01_QC/ (both R1 and R2 files).
+
+```
+#S03_basalt.pbs
+
+. /path/to/basalt/1.0.0/env.sh
 
 
+# BASALT does not support absolute path as input. We need to create soft links to our working directory.
 
+cd /path/to/07_basalt
+
+BASALT -a MIR-contigs-prefix-formatted-only.fa \
+       -s PBT3_F-QUALITY_PASSED_R1.fastq.gz,PBT3_F-QUALITY_PASSED_R2.fastq.gz/PBT3_S-QUALITY_PASSED_R1.fastq.gz,PBT3_S-QUALITY_PASSED_R2.fastq.gz/PBT-QUALITY_PASSED_R1.fastq.gz,PBT-QUALITY_PASSED_R2.fastq.gz/PL4_F-QUALITY_PASSED_R1.fastq.gz,PL4_F-QUALITY_PASSED_R2.fastq.gz/PL4_S-QUALITY_PASSED_R1.fastq.gz,PL4_S-QUALITY_PASSED_R2.fastq.gz/PL6_F-QUALITY_PASSED_R1.fastq.gz,PL6_F-QUALITY_PASSED_R2.fastq.gz/PL6_S-QUALITY_PASSED_R1.fastq.gz,PL6_S-QUALITY_PASSED_R2.fastq.gz/T1-QUALITY_PASSED_R1.fastq.gz,T1-QUALITY_PASSED_R2.fastq.gz\
+       --autopara more-sensitive \
+       -t ${NCPUS} -m 300 >> ../00_LOGS/basalt.log 2>&1
+
+```
+# Quality check
+
+The step for selecting MAGs based on completeness and redundancy was carried out using the CheckM2 tool.
+
+```
+#S04_checkm2.pbs
+# Load Singularity
+. /etc/profile.d/modules.sh
+module purge
+module load singularity/3.4.1
+
+# Load Checkm2 environment
+. /path/to/checkm2/1.0.1/env.sh
+
+# Checkm2 singularity container
+CHECKM2_SIF=/path/to/checkm2/1.0.1/checkm2-1.0.1.sif
+
+workdir=$(/path/to/03_MAGs)
+outdir=$("$workdir"/checkm2_output)
+input=$("$workdir"/bins)
+
+cd $workdir
+#Run Checkm2
+singularity run -B /appli -B /path/to/checkm2/1.0.1/ -B $DATAWORK ${CHECKM2_SIF} checkm2 predict --input $input -x fa --threads 6 --output-directory $outdir >& $workdir/checkm2_test.log 2>&1  
+  
+```
