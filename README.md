@@ -138,3 +138,26 @@ cd /path/to/03_MAGs
 gtdbtk classify_wf --cpus 33 --genome_dir MAGs --skip_ani_screen -x fa --out_dir taxonomy/classify_wf_output_gtdbtk >> ../LOGS/MAGs_gtdbtk.log 2>&1
 
 ```
+
+# Reformatted Fasta files
+
+The Fasta files were reformatted using the command line `anvi-script-reformat-fasta` in Anvio'8.
+
+```
+# S08_reformat.pbs
+# Load tool : path to the tool
+. /appli/bioinfo/anvio/8_dev/env.sh
+
+# Path to working directory
+cd /home/datawork-lmee-intranet-nos/IRON2MI/LUDIVINE/01_metagenomic_mat/MARION/04_MAGs
+
+# Reformat fasta files : in fasta file, replace bin name by the rename bin name (script S01)
+for i in MAGs_SELECTED/*.fa
+do 
+name=$(basename "$i")
+prefix=$(echo "$name"|cut -f1 -d '_')
+
+anvi-script-reformat-fasta $i -o NCBI/MIR_"$prefix".fasta --prefix $prefix --simplify-names -r NCBI.txt
+done >> ../00_LOGS/${PBS_JOBNAME}.log 2>&1
+
+```
