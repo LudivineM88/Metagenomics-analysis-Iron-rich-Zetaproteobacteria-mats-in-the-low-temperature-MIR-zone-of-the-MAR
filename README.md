@@ -169,7 +169,7 @@ This step allows us to assess the relative abundance of the recovered bins acros
 
 ```
 #S09_mapping.pbs
-. /appli/bioinfo/anvio/8_dev/env.sh
+. /path/to/anvio/8_dev/env.sh
 
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
 LOG="S08_mapping"_"$TIMESTAMP"".log"
