@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#PBS -l mem=1G
+#PBS -q sequentiel
+#PBS -l walltime=160:00:00
+#PBS -m n
+
+########################################
+##      Load environment              ##
+########################################
+
+. /appli/bioinfo/anvio/8_dev/env.sh
+
+########################################
+##      Execute script                ##
+########################################
+TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
+LOG="S08_mapping"_"$TIMESTAMP"".log"
+
+cd /path/to/06_MAPPING
+
+anvi-run-workflow -w metagenomics \
+                  -c /path/to/config.json \
+                  --additional-params \
+                      --directory /hpath/to/06_MAPPING \
+                      --jobs 20 \
+                      --latency-wait 420 \
+                      --cluster-config /path/to/cluster.yml \
+		      --rerun-triggers mtime \
+                      --cluster \
+                          "qsub -N {rule} \
+                                -m n \
+                                -q {cluster.queue} \
+                                -l walltime={cluster.walltime} \
+                                -l mem={cluster.memory} \
+                                -l ncpus={threads} \
+                                -V" >> /path/to/00_LOGS/$LOG 2>&1
