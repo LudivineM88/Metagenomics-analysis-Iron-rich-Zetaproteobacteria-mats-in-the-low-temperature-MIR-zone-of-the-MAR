@@ -14,6 +14,10 @@ All data analysis were performed using the DATARMOR cluster (https://pcdm.ifreme
 
 # Quality control of raw metagenomic data
 
+Read quality assessment and adapter trimming were first conducted using FastQC, MultiQC, and BBDuk. These analyses were implemented through a Snakemake workflow developed by J. Aubé, a bioinformatics engineer at the laboratory, ensuring a standardized and reproducible preprocessing pipeline.
+
+
+
 
 
 
