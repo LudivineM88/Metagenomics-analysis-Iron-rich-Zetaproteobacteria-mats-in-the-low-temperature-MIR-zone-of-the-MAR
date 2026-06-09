@@ -1,0 +1,2 @@
+# Metagenomics-analysis-Iron-rich-Zetaproteobacteria-mats-in-the-low-temperature-MIR-zone-of-the-MAR
+Numerous studies have examined the iron-rich microbial mats of the Lō‘ihi Seamount, whereas only a few have described mats in the Atlantic Ocean linked. Because microbial mats on old massive sulfide mounds of the MAR remain poorly documented, newly discovered low-temperature sites offer opportunities to better understand their functioning.
