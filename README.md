@@ -195,7 +195,7 @@ anvi-run-workflow -w metagenomics \
 
 ```
 
-# HMM 
+# 5. HMM 
 ## 5.1 Construction of the HMM profile _grcJ_ 
 
 HMM profile for the _grcJ_ gene, identified as a potential new marker of iron oxidation (Barco et al., 2025), was created and used with the HMMER tool (v.3.3.2) (Eddy et al., 2023). First, the amino acid sequence from Barco et al. (2024) was retrieved and entered into the NCBI database (WP_051937832.1) in order to obtain other _grcJ_ sequences. Hits with an e-value lower than 1.0×10<sup>-50</sup> were conserved and aligned with multiple alignment program for amino acid or nucleotide sequences (v7) (MAFFT). The HMM profile of _grcJ_ was built with hmmbuild (default parameter) (DOI: 10.5281/zenodo.19659629). 
@@ -209,7 +209,7 @@ hmmbuild grcJ.hmm grcJ_alignement.fasta
 All HMM profile searches for all MAGs were based on Prokka prediction with a threshold value of 1.0×10<sup>-30</sup> using HMMER tool
 
 ```
-#S09_HMM.pbs
+#S13_HMM.pbs
 cd 05_ANNOTATION
 # Do the HMM search from .faa (prokka output)
 for ID in prokka/*/*.faa
