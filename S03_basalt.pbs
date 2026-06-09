@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#PBS -l mem=500G
+#PBS -q omp
+#PBS -l ncpus=32
+#PBS -l walltime=720:00:00
+
+
+. /path/to/basalt/1.0.0/env.sh
+
+
+# BASALT does not support absolute path as input. We need to create soft links to our working directory.
+
+cd /path/to/07_basalt
+
+BASALT -a MIR-contigs-prefix-formatted-only.fa \
+       -s PBT3_F-QUALITY_PASSED_R1.fastq.gz,PBT3_F-QUALITY_PASSED_R2.fastq.gz/PBT3_S-QUALITY_PASSED_R1.fastq.gz,PBT3_S-QUALITY_PASSED_R2.fastq.gz/PBT-QUALITY_PASSED_R1.fastq.gz,PBT-QUALITY_PASSED_R2.fastq.gz/PL4_F-QUALITY_PASSED_R1.fastq.gz,PL4_F-QUALITY_PASSED_R2.fastq.gz/PL4_S-QUALITY_PASSED_R1.fastq.gz,PL4_S-QUALITY_PASSED_R2.fastq.gz/PL6_F-QUALITY_PASSED_R1.fastq.gz,PL6_F-QUALITY_PASSED_R2.fastq.gz/PL6_S-QUALITY_PASSED_R1.fastq.gz,PL6_S-QUALITY_PASSED_R2.fastq.gz/T1-QUALITY_PASSED_R1.fastq.gz,T1-QUALITY_PASSED_R2.fastq.gz\
+       --autopara more-sensitive \
+       -t ${NCPUS} -m 300 >> ../00_LOGS/basalt.log 2>&1
