@@ -146,10 +146,10 @@ The Fasta files were reformatted using the command line `anvi-script-reformat-fa
 ```
 # S08_reformat.pbs
 # Load tool : path to the tool
-. /appli/bioinfo/anvio/8_dev/env.sh
+. /path/to/anvio/8_dev/env.sh
 
 # Path to working directory
-cd /home/datawork-lmee-intranet-nos/IRON2MI/LUDIVINE/01_metagenomic_mat/MARION/04_MAGs
+cd /path/to/04_MAGs
 
 # Reformat fasta files : in fasta file, replace bin name by the rename bin name (script S01)
 for i in MAGs_SELECTED/*.fa
