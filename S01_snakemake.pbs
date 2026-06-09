@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#PBS -l mem=1G
+#PBS -q sequentiel
+#PBS -l walltime=720:00:00
+#PBS -m n
+
+. /path/to/snakemake/6.6.0/env.sh
+
+TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
+LOG="S01_snakemake"_"$TIMESTAMP"".log"
+
+SF=Path/to/script
+
+snakemake $@ --verbose --cluster-config $SF/S01_cluster.yml --configfile $SF/S01_cluster.yml -p --jobs 30 --cluster "qsub -S '/bin/bash' -N {rule} -m n -q {cluster.queue} -l ncpus={cluster.ncpus} -l walltime={cluster.walltime} -l mem={cluster.memory}" --latency-wait 420 -s $SF/S01_rules.smk --rerun-incomplete --reason >> $SF/$LOG 2>&1

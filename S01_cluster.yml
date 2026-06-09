@@ -1,0 +1,28 @@
+datadir: "/path/to/00_raw_data"
+workdir: "/path/to/01_QC"
+
+__default__:
+        ncpus : 1
+        walltime : "1:00:00"
+        memory : "4G"
+        queue : "sequentiel"
+fastqc:
+        ncpus : 4
+        memory : "10G"
+        queue : "omp"
+        walltime : "24:00:00"
+bbduk:
+        ncpus : 16
+        memory : "200G"
+        queue : "omp"
+        walltime : "24:00:00"
+fastqc_trimmed:
+        ncpus : 4
+        memory : "10G"
+        queue : "omp"
+        walltime : "24:00:00"
+wget:
+        ncpus : 1
+        memory : "4G"
+        queue : "ftp"
+        walltime : "1:00:00"
