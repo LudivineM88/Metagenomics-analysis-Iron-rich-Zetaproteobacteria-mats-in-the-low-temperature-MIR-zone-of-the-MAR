@@ -1,0 +1,62 @@
+__default__ :
+        walltime : "24:00:00"
+        queue : "sequentiel"
+        memory : "5G"
+iu_filter_quality_minoche :
+        walltime : "72:00:00"
+        queue : "sequentiel"
+        memory : "5G"
+anvi_run_hmms :
+        queue : "omp"
+        walltime : "72:00:00"
+        memory : "100G"
+anvi_run_ncbi_cogs :
+        queue : "omp"
+        walltime : "720:00:00"
+        memory : "100G"
+megahit :
+        queue : "omp"
+        walltime : "180:00:00"
+        memory : "500G"
+bowtie :
+        queue : "mpi"
+        walltime : "48:00:00"
+        memory : "80G"
+anvi_profile :
+        queue : "omp"
+        walltime : "72:00:00"
+        memory : "40G"
+samtools_view :
+        queue : "omp"
+        walltime : "48:00:00"
+        memory : "20G"
+anvi_init_bam :
+        queue : "omp"
+        walltime : "80:00:00"
+        memory : "12G"
+bowtie_build :
+        queue : "omp"
+        walltime : "24:00:00"
+        memory : "20G"
+anvi_run_scg_taxonomy :
+        queue : "omp"
+        walltime : "30:00:00"
+        memory : "40G"
+anvi_merge :
+        queue : "sequentiel"
+        walltime : "48:00:00"
+        memory : "50G"
+anvi_run_trna_scan :
+        queue : "omp"
+        walltime : "24:00:00"
+        memory : "10G"
+anvi_run_kegg_kofams :
+        queue : "omp"
+        walltime : "720:00:00"
+        memory : "500G"
+anvi_cluster_contigs :
+        queue : "omp"
+        walltime : "24:00:00"
+        memory : "20G"
+anvi_gen_contigs_database :
+        queue : "omp"

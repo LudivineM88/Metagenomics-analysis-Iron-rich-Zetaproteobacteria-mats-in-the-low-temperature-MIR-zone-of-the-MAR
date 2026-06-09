@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#PBS -l mem=1G
+#PBS -q sequentiel
+#PBS -l walltime=720:00:00
+#PBS -m n
+
+
+. /appli/bioinfo/anvio/8_dev/env.sh
+
+
+TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
+LOG="S40_anvi_workflow"_"$TIMESTAMP"".log"
+
+cd /path/to/02_anvio
+
+anvi-run-workflow -w metagenomics \
+                  -c /path/to/02_anvio/metagenomic_config.json \
+                  --additional-params \
+                      --directory /path/to/02_anvio \
+                      --jobs 30 \
+                      --rerun-triggers mtime \
+                      --latency-wait 420 \
+                      --cluster-config /path/to/02_anvio/cluster.yml \
+                      --cluster \
+                          "qsub -N {rule} \
+                                -m n \
+                                -q {cluster.queue} \
+                                -l walltime={cluster.walltime} \
+                                -l mem={cluster.memory} \
+                                -l ncpus={threads} \
+                                -V" >> $HOME/script/$LOG 2>&1
