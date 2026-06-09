@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+#PBS -l mem=20G
+#PBS -q omp
+#PBS -l ncpus=10
+#PBS -l walltime=2:00:00
+#PBS -m n
+
+# Load tool : path to the tool
+. /path/to/hmmer/3.3.2/env.sh
+
+# Path to working directory
+#cd /path/to/09_HMM
+
+# Construire le profil HMM à partir du fichier d'alignement de 
+#hmmbuild grcJ.hmm grcJ_alignement.fasta 
+#(mem=10G, ncpus=2, Walltime=2:00:00)
+
+
+cd /path/to/05_ANNOTATION/
+# Faire la recherche hmm depuis les sortie de prokka
+for ID in prokka/*/*.faa
+    do
+    name=$(basename $ID .faa)
+    hmmsearch ../12_HMM/grcJ.hmm $ID
+done >& ../12_HMM/hmm_search_output.txt 2>&1 
+
