@@ -128,7 +128,7 @@ The quality filter was set to a completion rate of over 70% and a redundancy rat
 
 ## 2.2 Taxonomic assignation
 
-Taxonomic affiliation was carried out with the GTDB-Tk tool using the GTDB database (v.2.7.0 (R232))
+Taxonomic affiliation was carried out with the GTDB-Tk tool using the GTDB database (v.2.7.0 (R232)).
 
 ```
 #S05_gtdbtk.pbs
@@ -206,7 +206,7 @@ hmmbuild grcJ.hmm grcJ_alignement.fasta
 
 ## 5.2 HMM profile searches
 
-All HMM profile searches for all MAGs were based on Prokka prediction with a threshold value of 1.0×10<sup>-30</sup> using HMMER tool
+All HMM profile searches for all MAGs were based on Prokka prediction with a threshold value of 1.0×10<sup>-30</sup> using HMMER tool.
 
 ```
 #S13_HMM.pbs
@@ -219,13 +219,42 @@ for ID in prokka/*/*.faa
 done
 ```
 
-# 6. Metabolic overview 
-## 6.1 Fegenie
+# 6. Phylogenomic tree 
+
+## 6.1 Aligment
+
+The phylogenomic tree based on 251 MAGs was generated using the _align_ command of GTDB-Tk. This allow to created gtdbtk.bac120.user_msa.fasta file.
+
+```
+gtdbtk identify --cpus 33 -x fa --genome_dir 04_MAGs/MAGs_SELECTED --out_dir 03_TAXONOMY/GTDB-Tk_V270/03_selected/identify_bis >& 00_LOGS/${PBS_JOBNAME}_identify.log 2>&1
+
+ gtdbtk align --cpus 33 --identify_dir 03_TAXONOMY/GTDB-Tk_V270/03_selected/identify_bis --out_dir 03_TAXONOMY/GTDB-Tk_V270/03_selected/align_bis >& 00_LOGS/${PBS_JOBNAME}_align.log 2>&1
+```
+
+## 6.2 Trimming
+
+Alignement was trimmed with TrimAl tool with removing alignement positions containing gaps in more than 50 % of the sequences based on previously created file gtdbtk.bac120.user_msa.fasta
+
+```
+trimal -in 03_TAXONOMY/GTDB-Tk_V270/03_selected/align_bis/align/gtdbtk.bac120.user_msa.fasta -out 11_TREE_lulu/01_general_V270/bacteria_trim_bis.fasta -gt 0.50 >& 00_LOGS/${PBS_JOBNAME}.log 2>&1
+```
+
+## 6.3 Tree formation
+
+The tree was build using IQ-TREE tool, based on the WAG model and on the maximum likelihood method, with 1,000 bootstraps replicates.
+
+```
+iqtree -s bacteria_trim_bis.fasta -nt AUTO -ntmax $NCPUS -m WAG -bb 1000 -redo >& ../../00_LOGS/${PBS_JOBNAME}.log 2>&1
+```
+
+Additional information (completion, redundancy and number of genes involved in iron metabolism in each MAGs) was added by the command line _anvi-import-misc-data_ and the phylogenomic tree was visualized via Anvi’o v8 and modified _via_ Inkscape (Figure 2).
+
+<img width="3379" height="3238" alt="arbre_general_V270_VF" src="https://github.com/user-attachments/assets/1a7b0176-9b17-4928-ac0b-c5adb9b4332b" />
+Figure 2: Maximum likelihood phylogenomic tree showing the position of 251 bacterial MAGs from the MIR zone at the TAG hydrothermal field (MAR), based on 120 single-copy core genes (from GTDB-Tk) with 1,000 iterations. The two outer layers indicate the phylum and class of MAGs based on version v.2.7.0 (R232) of GTDB. The following six layers provide information on the number of genes involved in iron reduction (mtrCBA, DFE, OmcZ, omc), and iron oxidation (sulfocyanin, cyc2 (clusters 1, 2, and 3), grcJ) in each MAG. The two central layers represent contamination (from 0 % to 5 %) and redundancy (from 70 % to 100 %) of each MAG. The Zetaproteobacteria branch is shown in purple. 
 
 
-## 6.2 METABOLIC
-
-# 7. Phylogenomic tree 
-
+# 7. Metabolic overview 
+## 7.1 Fegenie
 
 
+## 7.2 METABOLIC
