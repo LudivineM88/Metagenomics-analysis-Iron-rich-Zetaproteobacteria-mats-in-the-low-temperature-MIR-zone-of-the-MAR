@@ -247,14 +247,25 @@ The tree was build using IQ-TREE tool, based on the WAG model and on the maximum
 iqtree -s bacteria_trim_bis.fasta -nt AUTO -ntmax $NCPUS -m WAG -bb 1000 -redo >& ../../00_LOGS/${PBS_JOBNAME}.log 2>&1
 ```
 
-Additional information (completion, redundancy and number of genes involved in iron metabolism in each MAGs) was added by the command line _anvi-import-misc-data_ and the phylogenomic tree was visualized via Anvi’o v8 and modified _via_ Inkscape (Figure 2).
+Additional information (completion, redundancy and number of genes involved in iron metabolism in each MAGs) was added by the command line _anvi-import-misc-data_ and the phylogenomic tree was visualized _via_ Anvi’o v8 and modified _via_ Inkscape (Figure 2).
 
 <img width="3379" height="3238" alt="arbre_general_V270_VF" src="https://github.com/user-attachments/assets/1a7b0176-9b17-4928-ac0b-c5adb9b4332b" />
-Figure 2: Maximum likelihood phylogenomic tree showing the position of 251 bacterial MAGs from the MIR zone at the TAG hydrothermal field (MAR), based on 120 single-copy core genes (from GTDB-Tk) with 1,000 iterations. The two outer layers indicate the phylum and class of MAGs based on version v.2.7.0 (R232) of GTDB. The following six layers provide information on the number of genes involved in iron reduction (mtrCBA, DFE, OmcZ, omc), and iron oxidation (sulfocyanin, cyc2 (clusters 1, 2, and 3), grcJ) in each MAG. The two central layers represent contamination (from 0 % to 5 %) and redundancy (from 70 % to 100 %) of each MAG. The Zetaproteobacteria branch is shown in purple. 
-
+Figure 2: Maximum likelihood phylogenomic tree showing the position of 251 bacterial MAGs from the MIR zone at the TAG hydrothermal field (MAR), based on 120 single-copy core genes (from GTDB-Tk) with 1,000 iterations. The two outer layers indicate the phylum and class of MAGs based on version v.2.7.0 (R232) of GTDB. The following six layers provide information on the number of genes involved in iron reduction (_mtrCBA_, _DFE_, _OmcZ_, _omc_), and iron oxidation (sulfocyanin, _cyc2_ (clusters 1, 2, and 3), _grcJ_) in each MAG. The two central layers represent contamination (from 0 % to 5 %) and redundancy (from 70 % to 100 %) of each MAG. 
 
 # 7. Metabolic overview 
 ## 7.1 Fegenie
 
-
+The Fegenie tool was used to identify marker genes involved in iron metabolism.
+```
+FeGenie.py -bin_dir ../04_MAGs/MAGs_SELECTED/ -bin_ext fa -out fegenie -T 24
+```
 ## 7.2 METABOLIC
+
+The METABOLIC tool (METABOLIC-G) was used to assess the overall metabolism of 22 MAGs belonging to the class Zetaproteobacteria.
+```
+. /path/to/metabolic/4.0/env.sh
+
+cd /path/to/working/directory/13_METABOLIC
+
+perl /path/to/metabolic/4.0/METABOLIC/METABOLIC-G.pl -in-gn fasta -o output_MAGS_ZETA -t 8
+```
